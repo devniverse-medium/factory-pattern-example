@@ -39,7 +39,7 @@ public:
 class PetshopFactory {
 public:
     //de acordo com a raça do cachorro essa classe vai criar um petshop especifico
-    Petshop* criar( const QString& racaDoCachorro ) {
+    static Petshop* criar( const QString& racaDoCachorro ) {
         //o ideal nesse caso é usar um switch ao invés do if, aqui usamos if para ficar mais simples
 
         //se a raça for DALMATA, retorna um petshop especializado em DALMATAS
@@ -57,22 +57,19 @@ public:
 
 };
 
-
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
     //criando meu objeto Cachorro, da raça Dalmata
-    Cachorro* myDog = new Cachorro("DALMATA");
+    std::unique_ptr<Cachorro> myDog( new Cachorro("DALMATA"));
 
     //criando um objeto do tipo Petshop de acordo com a necessidade da raça do meu cachorro
-    Petshop* petshopEspecializado = ( new PetshopFactory() )->criar( myDog->getRaca() );
+    std::unique_ptr<Petshop> petshopEspecializado(PetshopFactory::criar( myDog->getRaca() ));
 
     //verificando se o petshop foi criado corretamente
     //deve ter como saida o texto "DALMATAS"
     qDebug() << petshopEspecializado->especialidade();
-
-    delete petshopEspecializado;
 
     return a.exec();
 }
